@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>Birthday Ticket</title>
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --ink: #151515;
+      --paper: #f7f5ef;
+      --yellow: #f8dc21;
+      --yellow-hot: #ffe942;
+      --muted: #9e9e9a;
+      --line: rgba(247, 245, 239, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--paper);
+      background: var(--black);
+      font-family: "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .experience {
+      isolation: isolate;
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 100svh;
+      min-height: 100dvh;
+      overflow: hidden;
+      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+      background:
+        radial-gradient(circle at 17% 7%, rgba(248, 220, 33, .15), transparent 26%),
+        radial-gradient(circle at 86% 91%, rgba(248, 220, 33, .1), transparent 30%),
+        linear-gradient(135deg, #121212 0%, #070707 55%, #15130a 100%);
+    }
+
+    .grain, .pitch-lines, .glow { pointer-events: none; position: absolute; inset: 0; }
+
+    .grain {
+      z-index: -1;
+      opacity: .14;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .pitch-lines {
+      z-index: -1;
+      inset: -20%;
+      opacity: .14;
+      transform: rotate(-28deg);
+      background:
+        linear-gradient(90deg, transparent 49.7%, #fff 49.8%, #fff 50.2%, transparent 50.3%),
+        linear-gradient(0deg, transparent 49.8%, #fff 50%, transparent 50.2%),
+        linear-gradient(90deg, transparent 22%, #fff 22.1%, transparent 22.2%, transparent 77.8%, #fff 77.9%, transparent 78%);
+      mask-image: linear-gradient(to bottom, transparent, #000 23%, #000 77%, transparent);
+    }
+
+    .glow {
+      z-index: -1;
+      inset: auto;
+      width: 310px;
+      height: 310px;
+      border-radius: 50%;
+      background: var(--yellow);
+      filter: blur(120px);
+      opacity: .08;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .ticket {
+      position: relative;
+      width: min(100%, 420px);
+      min-height: min(755px, calc(100dvh - 36px));
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(30, 30, 30, .98), rgba(11, 11, 11, .98));
+      box-shadow: 0 26px 80px rgba(0, 0, 0, .62), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .ticket::before, .ticket::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      width: 28px;
+      height: 28px;
+      top: 51%;
+      border-radius: 50%;
+      background: var(--black);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+    }
+
+    .ticket::before { left: -14px; }
+    .ticket::after { right: -14px; }
+
+    .ticket-head {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+      padding: 0 22px;
+      color: var(--black);
+      background: var(--yellow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .2em;
+    }
+
+    .brand-mark {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      border: 2px solid var(--black);
+      border-radius: 50%;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 2px;
+      background: var(--black);
+      transform: rotate(-44deg);
+    }
+
+    .entry { font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+
+    .serial {
+      position: absolute;
+      right: -22px;
+      bottom: 19px;
+      z-index: 2;
+      color: rgba(0,0,0,.64);
+      font-family: monospace;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 74px 0 0;
+      display: grid;
+      transition: opacity .4s ease, transform .55s cubic-bezier(.2,.8,.2,1), visibility .4s;
+    }
+
+    .scan-screen {
+      place-items: center;
+      padding: 26px;
+      text-align: center;
+    }
+
+    .scan-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .65;
+      background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.018) 5px 6px);
+      pointer-events: none;
+    }
+
+    .scan-content { position: relative; width: 100%; max-width: 292px; }
+
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--yellow);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .24em;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 12px;
+      font-size: clamp(37px, 11.5vw, 49px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: -.07em;
+    }
+
+    .scan-copy { margin-bottom: 32px; color: #d4d3cf; font-size: 15px; letter-spacing: .01em; }
+
+    .scanner {
+      position: relative;
+      width: min(61vw, 235px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+    }
+
+    .scanner .corner {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-color: var(--yellow);
+      border-style: solid;
+    }
+    .corner.tl { top: 0; left: 0; border-width: 3px 0 0 3px; }
+    .corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; }
+    .corner.bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; }
+    .corner.br { right: 0; bottom: 0; border-width: 0 3px 3px 0; }
+
+    .scan-line {
+      position: absolute;
+      right: 7px;
+      left: 7px;
+      height: 2px;
+      opacity: .95;
+      background: var(--yellow-hot);
+      box-shadow: 0 0 9px var(--yellow), 0 0 21px rgba(248,220,33,.45);
+      animation: scanning 1.75s cubic-bezier(.48, 0, .52, 1) infinite;
+    }
+
+    .ball {
+      position: absolute;
+      inset: 50%;
+      width: 84px;
+      height: 84px;
+      margin: -42px;
+      border: 2px solid rgba(247,245,239,.72);
+      border-radius: 50%;
+      opacity: .75;
+    }
+
+    .ball::before, .ball::after {
+      content: "";
+      position: absolute;
+      inset: 21px;
+      border: 2px solid rgba(247,245,239,.7);
+      border-radius: 50%;
+    }
+    .ball::after { inset: 10px 40px; border-width: 0 2px; border-radius: 0; transform: rotate(40deg); }
+
+    .scan-status {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 25px 0 0;
+      color: var(--muted);
+      font-family: monospace;
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); animation: pulse .9s ease-in-out infinite alternate; }
+
+    .valid-screen {
+      align-content: space-between;
+      visibility: hidden;
+      padding: clamp(26px, 5.5vh, 46px) 23px 24px;
+      opacity: 0;
+      transform: translateY(28px) scale(.985);
+    }
+
+    .valid-screen::before {
+      content: "";
+      position: absolute;
+      right: -76px;
+      top: -65px;
+      width: 205px;
+      height: 205px;
+      border: 1px solid rgba(248,220,33,.25);
+      border-radius: 50%;
+      box-shadow: 0 0 0 25px rgba(248,220,33,.035), 0 0 0 52px rgba(248,220,33,.025);
+    }
+
+    .valid-top, .facts, .wish { position: relative; z-index: 1; }
+
+    .approval {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .19em;
+    }
+
+    .approval-icon {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      color: var(--black);
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      max-width: 300px;
+      margin-bottom: 0;
+      font-size: clamp(42px, 12vw, 52px);
+      font-weight: 900;
+      line-height: .88;
+      letter-spacing: -.075em;
+    }
+
+    .facts {
+      margin: 25px 0;
+      border-top: 1px dashed rgba(247,245,239,.32);
+      border-bottom: 1px dashed rgba(247,245,239,.32);
+    }
+
+    .fact {
+      display: grid;
+      grid-template-columns: minmax(92px, .8fr) 1.4fr;
+      gap: 12px;
+      align-items: center;
+      min-height: 70px;
+      padding: 13px 0;
+    }
+
+    .fact + .fact { border-top: 1px solid rgba(247,245,239,.13); }
+    .fact-label { color: var(--yellow); font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+    .fact-value { font-size: clamp(15px, 4.25vw, 18px); font-weight: 800; line-height: 1.05; letter-spacing: -.025em; }
+    .inline-check { color: var(--yellow); font-size: .9em; margin-left: 3px; }
+
+    .wish {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-top: 3px;
+    }
+
+    .wish-text {
+      max-width: 230px;
+      margin: 0;
+      font-size: clamp(24px, 7vw, 31px);
+      font-weight: 900;
+      line-height: .91;
+      letter-spacing: -.06em;
+    }
+
+    .ticket-stamp {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      color: var(--yellow);
+      border: 1px solid var(--yellow);
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: .04em;
+      text-align: center;
+      transform: rotate(-12deg);
+    }
+
+    .barcode {
+      position: absolute;
+      right: 23px;
+      bottom: 16px;
+      z-index: 2;
+      width: 84px;
+      height: 24px;
+      opacity: .35;
+      background: repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 3px, #fff 3px 5px, transparent 5px 7px, #fff 7px 8px, transparent 8px 11px);
+    }
+
+    .confetti { pointer-events: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; }
+    .confetti i {
+      position: absolute;
+      top: -12%;
+      width: var(--w);
+      height: var(--h);
+      border-radius: 1px;
+      opacity: 0;
+      background: var(--c);
+      transform: translateX(0) rotate(0deg);
+    }
+    .is-verified .confetti i { animation: fall var(--d) var(--delay) cubic-bezier(.18,.7,.4,1) forwards; }
+
+    .is-verified .scan-screen { visibility: hidden; opacity: 0; transform: translateY(-18px) scale(.98); }
+    .is-verified .valid-screen { visibility: visible; opacity: 1; transform: none; transition-delay: .23s; }
+    .is-verified .ticket-head { animation: head-flash .55s ease both; }
+
+    @keyframes scanning { 0% { top: 7px; opacity: 0; } 8%, 92% { opacity: 1; } 100% { top: calc(100% - 9px); opacity: 0; } }
+    @keyframes pulse { to { opacity: .3; transform: scale(.65); } }
+    @keyframes head-flash { 0% { filter: brightness(1); } 45% { filter: brightness(1.4); } 100% { filter: brightness(1); } }
+    @keyframes fall {
+      0% { opacity: 0; transform: translate3d(0, -20px, 0) rotate(0); }
+      12% { opacity: .9; }
+      100% { opacity: .75; transform: translate3d(var(--x), 115dvh, 0) rotate(var(--r)); }
+    }
+
+    @media (max-height: 670px) {
+      .ticket { min-height: calc(100dvh - 24px); }
+      .ticket-head { height: 62px; }
+      .screen { inset: 62px 0 0; }
+      .valid-screen { padding-top: 20px; padding-bottom: 20px; }
+      .facts { margin: 15px 0; }
+      .fact { min-height: 58px; padding: 8px 0; }
+      .wish-text { font-size: 24px; }
+      .barcode { bottom: 10px; }
+      .scan-copy { margin-bottom: 22px; }
+      .scanner { width: min(47vw, 185px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="experience" id="experience" aria-live="polite">
+    <div class="grain"></div>
+    <div class="pitch-lines"></div>
+    <div class="glow"></div>
+
+    <section class="ticket" aria-label="Geburtstags-Ticket">
+      <header class="ticket-head">
+        <div class="brand"><span class="brand-mark">+</span><span>MATCHDAY PASS</span></div>
+        <span class="entry">ENTRY 022</span>
+        <span class="serial">BDAY-022-VALID</span>
+      </header>
+
+      <div class="screen scan-screen" aria-label="Ticket wird geprüft">
+        <div class="scan-content">
+          <p class="eyebrow">ZUGANGSKONTROLLE / 2026</p>
+          <h1>TICKET<br>CONTROL</h1>
+          <p class="scan-copy">Ticket wird geprüft&nbsp;...</p>
+          <div class="scanner" aria-hidden="true">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <span class="ball"></span><span class="scan-line"></span>
+          </div>
+          <p class="scan-status"><span class="pulse"></span>AUTHENTIFIZIERUNG LÄUFT</p>
+        </div>
+      </div>
+
+      <div class="screen valid-screen" aria-label="Ticket gültig">
+        <div class="valid-top">
+          <div class="approval"><span class="approval-icon">✓</span> TICKET GÜLTIG</div>
+          <h2>ZUTRITT<br>ERTEILT.</h2>
+        </div>
+
+        <div class="facts">
+          <div class="fact">
+            <span class="fact-label">IDENTITÄT</span>
+            <span class="fact-value">Geburtstagskind <span class="inline-check">✓</span></span>
+          </div>
+          <div class="fact">
+            <span class="fact-label">STATUS</span>
+            <span class="fact-value">Level 22<br>freigeschaltet</span>
+          </div>
+          <div class="fact">
+            <span class="fact-label">SONDER&shy;BERECHTIGUNG</span>
+            <span class="fact-value">1× Freibier</span>
+          </div>
+        </div>
+
+        <div class="wish">
+          <p class="wish-text">ALLES GUTE<br>ZUM GEBURTSTAG!</p>
+          <span class="ticket-stamp">LEVEL<br>22<br>PASS</span>
+        </div>
+        <span class="barcode" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <div class="confetti" aria-hidden="true">
+      <i style="left:5%;--w:5px;--h:14px;--c:#f8dc21;--x:38px;--r:410deg;--d:2.8s;--delay:.10s"></i>
+      <i style="left:13%;--w:8px;--h:6px;--c:#fff;--x:-45px;--r:-340deg;--d:3.5s;--delay:.38s"></i>
+      <i style="left:22%;--w:4px;--h:15px;--c:#f8dc21;--x:58px;--r:660deg;--d:3.1s;--delay:.12s"></i>
+      <i style="left:32%;--w:7px;--h:7px;--c:#fff;--x:-30px;--r:350deg;--d:2.7s;--delay:.67s"></i>
+      <i style="left:42%;--w:5px;--h:14px;--c:#f8dc21;--x:35px;--r:-520deg;--d:3.3s;--delay:.30s"></i>
+      <i style="left:53%;--w:9px;--h:5px;--c:#fff;--x:-52px;--r:730deg;--d:2.9s;--delay:.52s"></i>
+      <i style="left:65%;--w:4px;--h:12px;--c:#f8dc21;--x:42px;--r:-470deg;--d:3.6s;--delay:.16s"></i>
+      <i style="left:74%;--w:7px;--h:7px;--c:#fff;--x:-37px;--r:540deg;--d:2.6s;--delay:.74s"></i>
+      <i style="left:84%;--w:5px;--h:16px;--c:#f8dc21;--x:21px;--r:-620deg;--d:3.2s;--delay:.25s"></i>
+      <i style="left:93%;--w:8px;--h:5px;--c:#fff;--x:-42px;--r:390deg;--d:3.45s;--delay:.45s"></i>
+    </div>
+  </main>
+
+  <script>
+    window.setTimeout(function () {
+      document.getElementById('experience').classList.add('is-verified');
+    }, 2100);
+  </script>
+</body>
+</html>
