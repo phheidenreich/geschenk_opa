@@ -13,6 +13,7 @@
       --yellow: #f5d046;
       --yellow-hot: #ffe942;
       --success: #b9eb67;
+      --danger: #ed736d;
       --muted: #9e9e9a;
       --line: rgba(247, 245, 239, .18);
     }
@@ -577,6 +578,242 @@
     .is-confirmed .scan-content > *:not(.scan-success) { opacity: .12; transform: scale(.97); filter: blur(1px); transition: opacity .28s ease, transform .35s ease, filter .28s ease; }
     .is-confirmed .scan-success { opacity: 1; transform: none; }
 
+    .fingerprint-screen {
+      place-items: center;
+      visibility: hidden;
+      padding: 25px 22px;
+      opacity: 0;
+      text-align: center;
+      transform: translateY(22px) scale(.985);
+    }
+
+    .fingerprint-content {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      transform: translateZ(7px);
+    }
+
+    .fingerprint-title {
+      margin: 0 0 11px;
+      font-size: clamp(34px, 10vw, 43px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: -.065em;
+    }
+
+    .fingerprint-copy {
+      min-height: 19px;
+      margin-bottom: 19px;
+      color: #d4d3cf;
+      font-size: 15px;
+      letter-spacing: .01em;
+      transition: color .25s ease;
+    }
+
+    .fingerprint-sensor {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      place-items: center;
+      width: min(54vw, 205px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      padding: 0;
+      color: rgba(247,245,239,.76);
+      border: 1px solid rgba(247,245,239,.29);
+      border-radius: 50%;
+      outline: 0;
+      background: radial-gradient(circle at 50% 44%, rgba(245,208,70,.085), rgba(255,255,255,.02) 43%, transparent 68%);
+      box-shadow: inset 0 0 0 8px rgba(255,255,255,.018), inset 0 0 40px rgba(0,0,0,.28), 0 16px 36px rgba(0,0,0,.24);
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: color .28s ease, border-color .28s ease, background .28s ease, box-shadow .28s ease, transform .18s ease;
+    }
+
+    .fingerprint-sensor::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 11px;
+      border: 1px solid rgba(245,208,70,.19);
+      border-radius: 50%;
+      box-shadow: inset 0 0 22px rgba(245,208,70,.035);
+    }
+
+    .fingerprint-sensor::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 29%;
+      border-radius: 50%;
+      background: var(--yellow);
+      filter: blur(26px);
+      opacity: 0;
+      transform: scale(.65);
+      transition: opacity .28s ease, transform .34s ease;
+    }
+
+    .fingerprint-sensor.is-pressed { transform: scale(.97); }
+
+    .fingerprint-progress {
+      position: absolute;
+      z-index: 2;
+      inset: 4px;
+      width: calc(100% - 8px);
+      height: calc(100% - 8px);
+      overflow: visible;
+      pointer-events: none;
+      transform: rotate(-90deg);
+    }
+
+    .fingerprint-progress circle {
+      fill: none;
+      stroke: var(--yellow);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 289.03;
+      stroke-dashoffset: 289.03;
+      filter: drop-shadow(0 0 4px rgba(245,208,70,.6));
+      opacity: .18;
+      transition: opacity .25s ease, stroke .25s ease;
+    }
+
+    .fingerprint-icon {
+      position: relative;
+      z-index: 1;
+      width: 104px;
+      height: 104px;
+      overflow: visible;
+      filter: drop-shadow(0 0 8px rgba(245,208,70,.11));
+      transition: opacity .24s ease, transform .34s cubic-bezier(.2,1.25,.4,1), color .25s ease;
+    }
+
+    .fingerprint-icon path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .fingerprint-scan-line {
+      position: absolute;
+      z-index: 3;
+      right: 24%;
+      left: 24%;
+      top: 23%;
+      height: 2px;
+      opacity: 0;
+      background: #fff4a0;
+      box-shadow: 0 0 8px var(--yellow), 0 0 19px rgba(245,208,70,.56);
+      pointer-events: none;
+    }
+
+    .fingerprint-check {
+      position: absolute;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: 70px;
+      height: 70px;
+      color: #17200f;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 8px rgba(185,235,103,.12), 0 0 30px rgba(185,235,103,.45);
+      font-family: Arial, sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      opacity: 0;
+      transform: scale(.4);
+      transition: opacity .22s ease, transform .42s cubic-bezier(.2,1.35,.4,1);
+    }
+
+    .fingerprint-error {
+      position: absolute;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      color: #3a1210;
+      border-radius: 50%;
+      background: var(--danger);
+      box-shadow: 0 0 22px rgba(237,115,109,.42);
+      font-family: Arial, sans-serif;
+      font-size: 39px;
+      font-weight: 400;
+      line-height: 1;
+      opacity: 0;
+      transform: scale(.45);
+      transition: opacity .16s ease, transform .3s cubic-bezier(.2,1.35,.4,1);
+    }
+
+    .fingerprint-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100%, 205px);
+      margin: 15px auto 0;
+      color: var(--muted);
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .09em;
+    }
+
+    .fingerprint-status span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+    .fingerprint-state-label { color: var(--yellow); }
+
+    .fingerprint-screen[data-state="primed"] .fingerprint-sensor {
+      color: #fff6b8;
+      border-color: var(--yellow);
+      background: radial-gradient(circle at 50% 44%, rgba(245,208,70,.19), rgba(255,255,255,.035) 48%, transparent 70%);
+      box-shadow: inset 0 0 0 8px rgba(245,208,70,.045), inset 0 0 40px rgba(245,208,70,.08), 0 0 24px rgba(245,208,70,.18);
+    }
+    .fingerprint-screen[data-state="primed"] .fingerprint-sensor::after { opacity: .38; transform: none; }
+
+    .fingerprint-screen[data-state="scanning"] .fingerprint-sensor {
+      color: #fff8cd;
+      border-color: var(--yellow-hot);
+      background: radial-gradient(circle at 50% 47%, rgba(245,208,70,.24), rgba(255,255,255,.04) 48%, transparent 70%);
+      box-shadow: inset 0 0 0 8px rgba(245,208,70,.06), inset 0 0 45px rgba(245,208,70,.11), 0 0 28px rgba(245,208,70,.22);
+      transform: scale(1.012);
+    }
+    .fingerprint-screen[data-state="scanning"] .fingerprint-sensor::after { opacity: .5; transform: scale(1.12); }
+    .fingerprint-screen[data-state="scanning"] .fingerprint-progress circle { opacity: 1; }
+    .fingerprint-screen[data-state="scanning"] .fingerprint-scan-line { opacity: 1; animation: fingerprint-scan 1.05s cubic-bezier(.48,0,.52,1) infinite; }
+    .fingerprint-screen[data-state="scanning"] .fingerprint-icon path { animation: fingerprint-trace 1.15s ease-in-out infinite alternate; }
+    .fingerprint-screen[data-state="scanning"] .fingerprint-icon path:nth-child(2n) { animation-delay: .21s; }
+
+    .fingerprint-screen[data-state="failed"] .fingerprint-sensor {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: radial-gradient(circle, rgba(237,115,109,.2), transparent 65%);
+      box-shadow: 0 0 26px rgba(237,115,109,.23), inset 0 0 32px rgba(237,115,109,.12);
+      animation: fingerprint-shake .46s ease-in-out both;
+    }
+    .fingerprint-screen[data-state="failed"] .fingerprint-sensor::after { background: var(--danger); opacity: .38; transform: none; }
+    .fingerprint-screen[data-state="failed"] .fingerprint-copy, .fingerprint-screen[data-state="failed"] .fingerprint-state-label { color: var(--danger); }
+    .fingerprint-screen[data-state="failed"] .fingerprint-error { opacity: 1; transform: none; }
+
+    .fingerprint-screen[data-state="verified"] .fingerprint-sensor {
+      color: var(--success);
+      border-color: var(--success);
+      background: radial-gradient(circle, rgba(185,235,103,.28), transparent 68%);
+      box-shadow: 0 0 34px rgba(185,235,103,.34), inset 0 0 36px rgba(185,235,103,.13);
+    }
+    .fingerprint-screen[data-state="verified"] .fingerprint-sensor::after { background: var(--success); opacity: .58; transform: scale(1.25); }
+    .fingerprint-screen[data-state="verified"] .fingerprint-progress circle { stroke: var(--success); opacity: 1; }
+    .fingerprint-screen[data-state="verified"] .fingerprint-icon { opacity: 0; transform: scale(.64); }
+    .fingerprint-screen[data-state="verified"] .fingerprint-check { opacity: 1; transform: none; }
+    .fingerprint-screen[data-state="verified"] .fingerprint-copy, .fingerprint-screen[data-state="verified"] .fingerprint-state-label { color: var(--success); }
+
     .valid-screen {
       align-content: space-between;
       visibility: hidden;
@@ -710,7 +947,10 @@
     }
     .is-verified .confetti i { animation: fall var(--d) var(--delay) cubic-bezier(.18,.7,.4,1) forwards; }
 
+    .is-fingerprint .scan-screen { visibility: hidden; opacity: 0; transform: translateY(-18px) scale(.98); }
+    .is-fingerprint .fingerprint-screen { visibility: visible; opacity: 1; transform: none; }
     .is-verified .scan-screen { visibility: hidden; opacity: 0; transform: translateY(-18px) scale(.98); }
+    .is-verified .fingerprint-screen { visibility: hidden; opacity: 0; transform: translateY(-18px) scale(.98); }
     .is-verified .valid-screen { visibility: visible; opacity: 1; transform: none; transition-delay: .23s; }
     .is-verified .ticket-head { animation: head-flash .55s ease both; }
     .is-verified .approval-icon { animation: approval-pop .65s .33s cubic-bezier(.2,1.45,.3,1) both; }
@@ -735,6 +975,9 @@
     @keyframes success-flash { 0% { opacity: 0; } 28% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes approval-pop { 0% { transform: scale(.2) rotate(-35deg); } 70% { transform: scale(1.2) rotate(7deg); } 100% { transform: none; } }
     @keyframes fact-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes fingerprint-scan { 0% { transform: translateY(0); opacity: 0; } 10%, 88% { opacity: 1; } 100% { transform: translateY(116px); opacity: 0; } }
+    @keyframes fingerprint-trace { to { opacity: .42; filter: drop-shadow(0 0 6px rgba(245,208,70,.8)); } }
+    @keyframes fingerprint-shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
     @keyframes fall {
       0% { opacity: 0; transform: translate3d(0, -20px, 0) rotate(0); }
       12% { opacity: .9; }
@@ -756,6 +999,9 @@
       .scan-workflow { margin-top: 15px; }
       .scan-steps { gap: 4px; margin-top: 10px; }
       .scan-status { margin-top: 10px; }
+      .fingerprint-screen { padding-top: 18px; padding-bottom: 18px; }
+      .fingerprint-sensor { width: min(48vw, 185px); }
+      .fingerprint-copy { margin-bottom: 14px; }
     }
 
     @media (max-height: 590px) {
@@ -768,6 +1014,12 @@
       .scan-steps { gap: 3px; margin-top: 8px; }
       .scan-step { min-height: 16px; font-size: 9px; }
       .scan-status { margin-top: 8px; font-size: 9px; }
+      .fingerprint-screen { padding: 14px 20px; }
+      .fingerprint-title { margin-bottom: 7px; font-size: 33px; }
+      .fingerprint-copy { margin-bottom: 10px; font-size: 13px; }
+      .fingerprint-sensor { width: min(43vw, 158px); }
+      .fingerprint-icon { width: 82px; height: 82px; }
+      .fingerprint-status { margin-top: 10px; font-size: 9px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -825,8 +1077,35 @@
           </div>
           <div class="scan-success" aria-hidden="true">
             <span class="success-check">✓</span>
-            <span>PRÜFUNG ERFOLGREICH</span>
+            <span>FACE ID ERKANNT</span>
           </div>
+        </div>
+      </div>
+
+      <div class="screen fingerprint-screen" id="fingerprint-screen" data-state="idle" aria-label="Identitätsverifikation">
+        <div class="fingerprint-content">
+          <p class="eyebrow">IDENTITÄTSVERIFIKATION</p>
+          <h2 class="fingerprint-title">IDENTITÄT<br>PRÜFEN.</h2>
+          <p class="fingerprint-copy" id="fingerprint-message" aria-live="polite">Fingerabdruck erforderlich</p>
+          <button class="fingerprint-sensor" id="fingerprint-sensor" type="button" aria-label="Fingerabdruck-Sensor">
+            <svg class="fingerprint-progress" viewBox="0 0 100 100" aria-hidden="true"><circle id="fingerprint-progress" cx="50" cy="50" r="46"></circle></svg>
+            <svg class="fingerprint-icon" viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M50 12C29 12 15 29 15 50c0 10 3 18 8 25"></path>
+              <path d="M50 12c21 0 35 17 35 38 0 10-3 18-8 25"></path>
+              <path d="M27 78c-6-8-8-17-6-27 2-13 13-25 29-25"></path>
+              <path d="M73 78c6-8 8-17 6-27-2-13-13-25-29-25"></path>
+              <path d="M35 83c-5-8-6-18-3-28 3-11 10-18 18-18"></path>
+              <path d="M65 83c5-8 6-18 3-28-3-11-10-18-18-18"></path>
+              <path d="M42 87c-4-8-3-18 1-26 2-4 4-7 7-9"></path>
+              <path d="M58 87c4-8 3-18-1-26-2-4-4-7-7-9"></path>
+              <path d="M50 63c-3 4-4 10-2 16 1 4 2 6 2 8"></path>
+              <path d="M50 63c3 4 4 10 2 16-1 4-2 6-2 8"></path>
+            </svg>
+            <span class="fingerprint-scan-line" aria-hidden="true"></span>
+            <span class="fingerprint-check" aria-hidden="true">✓</span>
+            <span class="fingerprint-error" aria-hidden="true">×</span>
+          </button>
+          <p class="fingerprint-status"><span><span class="pulse"></span>SICHERHEITSSENSOR</span><span class="fingerprint-state-label" id="fingerprint-percent">00%</span></p>
         </div>
       </div>
 
@@ -886,6 +1165,11 @@
       var scanMeter = document.getElementById('scan-meter');
       var scanPercent = document.getElementById('scan-percent');
       var scanSteps = Array.prototype.slice.call(document.querySelectorAll('[data-scan-step]'));
+      var fingerprintScreen = document.getElementById('fingerprint-screen');
+      var fingerprintSensor = document.getElementById('fingerprint-sensor');
+      var fingerprintMessage = document.getElementById('fingerprint-message');
+      var fingerprintPercent = document.getElementById('fingerprint-percent');
+      var fingerprintProgress = document.getElementById('fingerprint-progress');
       var tapTimer;
       var reducedMotionQuery = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
       var prefersReducedMotion = reducedMotionQuery && reducedMotionQuery.matches;
@@ -896,6 +1180,20 @@
       var parallaxFrame = 0;
       var parallaxTarget = { x: 0, y: 0, shineX: 50, shineY: 50 };
       var parallaxCurrent = { x: 0, y: 0, shineX: 50, shineY: 50 };
+      var fingerprintState = 'idle';
+      var fingerprintPointerId = null;
+      var fingerprintDownAt = 0;
+      var fingerprintLongPressTimer = 0;
+      var fingerprintScanFrame = 0;
+      var fingerprintResetTimer = 0;
+      var fingerprintScanStartedAt = 0;
+      var fingerprintIsDown = false;
+      var fingerprintLongPressReached = false;
+      var fingerprintScanPhase = 0;
+      var FINGERPRINT_SHORT_TAP = 400;
+      var FINGERPRINT_LONG_PRESS = 700;
+      var FINGERPRINT_SCAN_DURATION = 3000;
+      var FINGERPRINT_CIRCUMFERENCE = 289.03;
 
       /* Each checkpoint gets enough time to read before the valid ticket is revealed. */
       var checkpoints = [
@@ -917,6 +1215,225 @@
         scanMessage.textContent = checkpoint.message;
         scanMeter.style.width = checkpoint.progress + '%';
         scanPercent.textContent = checkpoint.progress + '%';
+      }
+
+      /* Simulated biometrics only: state changes use tap duration and order, never touch data. */
+      function setFingerprintProgress(progress) {
+        var safeProgress = clamp(progress, 0, 100);
+
+        fingerprintPercent.textContent = (safeProgress < 10 ? '0' : '') + Math.round(safeProgress) + '%';
+        fingerprintProgress.style.strokeDashoffset = (FINGERPRINT_CIRCUMFERENCE * (1 - (safeProgress / 100))).toFixed(2);
+      }
+
+      function setFingerprintState(nextState, message) {
+        fingerprintState = nextState;
+        fingerprintScreen.dataset.state = nextState;
+        fingerprintMessage.textContent = message;
+      }
+
+      function clearFingerprintLongPress() {
+        if (fingerprintLongPressTimer) {
+          window.clearTimeout(fingerprintLongPressTimer);
+          fingerprintLongPressTimer = 0;
+        }
+      }
+
+      function clearFingerprintScan() {
+        if (fingerprintScanFrame) {
+          window.cancelAnimationFrame(fingerprintScanFrame);
+          fingerprintScanFrame = 0;
+        }
+      }
+
+      function releaseFingerprintPointer() {
+        if (fingerprintPointerId !== null && fingerprintSensor.hasPointerCapture && fingerprintSensor.hasPointerCapture(fingerprintPointerId)) {
+          try {
+            fingerprintSensor.releasePointerCapture(fingerprintPointerId);
+          } catch (error) {
+            /* A cancelled iOS touch can release capture before this cleanup runs. */
+          }
+        }
+        fingerprintPointerId = null;
+        fingerprintIsDown = false;
+        fingerprintSensor.classList.remove('is-pressed');
+      }
+
+      function resetFingerprint(message) {
+        clearFingerprintLongPress();
+        clearFingerprintScan();
+        window.clearTimeout(fingerprintResetTimer);
+        fingerprintScanPhase = 0;
+        fingerprintLongPressReached = false;
+        releaseFingerprintPointer();
+        setFingerprintProgress(0);
+        setFingerprintState('idle', message || 'Fingerabdruck erforderlich');
+      }
+
+      function fingerprintFailure(message) {
+        clearFingerprintLongPress();
+        clearFingerprintScan();
+        fingerprintScanPhase = 0;
+        releaseFingerprintPointer();
+        setFingerprintProgress(0);
+        setFingerprintState('failed', message);
+
+        if (navigator.vibrate) {
+          navigator.vibrate([16, 42, 16]);
+        }
+
+        window.clearTimeout(fingerprintResetTimer);
+        fingerprintResetTimer = window.setTimeout(function () {
+          if (fingerprintState === 'failed') {
+            resetFingerprint('Fingerabdruck erforderlich');
+          }
+        }, 1350);
+      }
+
+      function finishFingerprintScan() {
+        clearFingerprintScan();
+        clearFingerprintLongPress();
+        fingerprintSensor.classList.remove('is-pressed');
+        setFingerprintProgress(100);
+        setFingerprintState('verified', 'IDENTITÄT ERKANNT');
+
+        if (navigator.vibrate) {
+          navigator.vibrate([14, 34, 24]);
+        }
+
+        window.setTimeout(function () {
+          if (fingerprintState !== 'verified') {
+            return;
+          }
+          experience.classList.remove('is-fingerprint');
+          experience.classList.add('is-verified');
+          requestParallaxRender();
+        }, 1250);
+      }
+
+      function advanceFingerprintScan(timestamp) {
+        var progress;
+
+        fingerprintScanFrame = 0;
+        if (fingerprintState !== 'scanning' || !fingerprintIsDown) {
+          return;
+        }
+
+        progress = Math.min(100, ((timestamp - fingerprintScanStartedAt) / FINGERPRINT_SCAN_DURATION) * 100);
+        setFingerprintProgress(progress);
+
+        if (progress >= 35 && fingerprintScanPhase === 0) {
+          fingerprintScanPhase = 1;
+          fingerprintMessage.textContent = 'Biometrische Merkmale werden analysiert …';
+        } else if (progress >= 70 && fingerprintScanPhase === 1) {
+          fingerprintScanPhase = 2;
+          fingerprintMessage.textContent = 'Identität wird abgeglichen …';
+        }
+
+        if (progress >= 100) {
+          finishFingerprintScan();
+          return;
+        }
+
+        fingerprintScanFrame = window.requestAnimationFrame(advanceFingerprintScan);
+      }
+
+      function startFingerprintScan() {
+        if (fingerprintState !== 'primed' || !fingerprintIsDown) {
+          return;
+        }
+        fingerprintScanPhase = 0;
+        fingerprintScanStartedAt = performance.now();
+        setFingerprintProgress(0);
+        setFingerprintState('scanning', 'Fingerabdruck wird gelesen …');
+        fingerprintScanFrame = window.requestAnimationFrame(advanceFingerprintScan);
+      }
+
+      function handleFingerprintLongPress() {
+        fingerprintLongPressTimer = 0;
+        if (!fingerprintIsDown || fingerprintState === 'verified' || fingerprintState === 'failed') {
+          return;
+        }
+
+        fingerprintLongPressReached = true;
+        if (fingerprintState === 'primed') {
+          startFingerprintScan();
+        } else if (fingerprintState === 'idle') {
+          fingerprintFailure('IDENTITÄT NICHT ERKANNT');
+        }
+      }
+
+      function handleFingerprintPointerDown(event) {
+        if (fingerprintState === 'verified' || fingerprintState === 'scanning' || fingerprintState === 'failed' || (event.button !== undefined && event.button !== 0)) {
+          return;
+        }
+
+        event.preventDefault();
+        fingerprintPointerId = event.pointerId;
+        fingerprintDownAt = performance.now();
+        fingerprintIsDown = true;
+        fingerprintLongPressReached = false;
+        fingerprintSensor.classList.add('is-pressed');
+
+        try {
+          fingerprintSensor.setPointerCapture(event.pointerId);
+        } catch (error) {
+          /* Safari may not retain capture for every touch; pointerup still resets safely. */
+        }
+
+        clearFingerprintLongPress();
+        fingerprintLongPressTimer = window.setTimeout(handleFingerprintLongPress, FINGERPRINT_LONG_PRESS);
+      }
+
+      function handleFingerprintPointerUp(event) {
+        var duration;
+
+        if (fingerprintPointerId !== null && event.pointerId !== fingerprintPointerId) {
+          return;
+        }
+        event.preventDefault();
+        duration = performance.now() - fingerprintDownAt;
+        clearFingerprintLongPress();
+        releaseFingerprintPointer();
+
+        if (fingerprintState === 'scanning') {
+          fingerprintFailure('Scan unterbrochen');
+        } else if (fingerprintState === 'idle' && !fingerprintLongPressReached) {
+          if (duration < FINGERPRINT_SHORT_TAP) {
+            setFingerprintState('primed', 'Sensor aktiviert');
+          } else {
+            fingerprintFailure('IDENTITÄT NICHT ERKANNT');
+          }
+        } else if (fingerprintState === 'primed' && !fingerprintLongPressReached) {
+          setFingerprintState('primed', 'Finger erneut auflegen');
+        }
+      }
+
+      function handleFingerprintPointerCancel(event) {
+        if (fingerprintPointerId !== null && event.pointerId !== fingerprintPointerId) {
+          return;
+        }
+        clearFingerprintLongPress();
+        releaseFingerprintPointer();
+        if (fingerprintState === 'scanning') {
+          fingerprintFailure('Scan unterbrochen');
+        } else if (fingerprintState === 'idle') {
+          resetFingerprint();
+        }
+      }
+
+      function handleFingerprintPointerLeave(event) {
+        var hasCapture = fingerprintSensor.hasPointerCapture && fingerprintSensor.hasPointerCapture(event.pointerId);
+
+        if (fingerprintPointerId === null || event.pointerId !== fingerprintPointerId || hasCapture) {
+          return;
+        }
+        handleFingerprintPointerCancel(event);
+      }
+
+      function showFingerprint() {
+        experience.classList.remove('is-confirmed');
+        experience.classList.add('is-fingerprint');
+        resetFingerprint('Fingerabdruck erforderlich');
       }
 
       function clamp(value, minimum, maximum) {
@@ -1091,13 +1608,12 @@
         }
 
         window.setTimeout(function () {
-          experience.classList.add('is-verified');
-          requestParallaxRender();
-        }, 420);
+          showFingerprint();
+        }, 650);
       }
 
       function tapTicket(event) {
-        if (event.target.closest && event.target.closest('.gyro-button')) {
+        if (event.target.closest && (event.target.closest('.gyro-button') || event.target.closest('.fingerprint-sensor'))) {
           return;
         }
         ticket.classList.remove('is-tapped');
@@ -1118,6 +1634,16 @@
       window.setTimeout(confirmTicket, 6150);
 
       ticket.addEventListener('pointerdown', tapTicket, { passive: true });
+
+      if (fingerprintSensor) {
+        fingerprintSensor.addEventListener('pointerdown', handleFingerprintPointerDown);
+        fingerprintSensor.addEventListener('pointerup', handleFingerprintPointerUp);
+        fingerprintSensor.addEventListener('pointercancel', handleFingerprintPointerCancel);
+        fingerprintSensor.addEventListener('pointerleave', handleFingerprintPointerLeave);
+        fingerprintSensor.addEventListener('contextmenu', function (event) {
+          event.preventDefault();
+        });
+      }
 
       if (!prefersReducedMotion && sensorAvailable && gyroButton) {
         gyroButton.addEventListener('click', requestOrientation);
