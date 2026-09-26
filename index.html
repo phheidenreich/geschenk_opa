@@ -269,6 +269,8 @@
       transition: color .28s ease, opacity .28s ease, transform .28s ease;
     }
 
+    .experience.has-gyro-control .scan-copy { margin-bottom: 11px; }
+
     .scanner {
       position: relative;
       width: min(61vw, 235px);
@@ -446,12 +448,13 @@
     .gyro-button {
       position: relative;
       z-index: 5;
-      display: inline-flex;
+      display: flex;
+      width: fit-content;
       align-items: center;
       justify-content: center;
       gap: 7px;
       min-height: 29px;
-      margin: 13px auto 0;
+      margin: 0 auto 13px;
       padding: 0 12px;
       color: var(--yellow);
       border: 1px solid rgba(245,208,70,.48);
@@ -696,7 +699,7 @@
       .scan-workflow { margin-top: 15px; }
       .scan-steps { gap: 4px; margin-top: 10px; }
       .scan-status { margin-top: 10px; }
-      .gyro-button { margin-top: 10px; min-height: 27px; }
+      .gyro-button { margin-bottom: 10px; min-height: 27px; }
     }
 
     @media (max-height: 590px) {
@@ -709,7 +712,8 @@
       .scan-steps { gap: 3px; margin-top: 8px; }
       .scan-step { min-height: 16px; font-size: 9px; }
       .scan-status { margin-top: 8px; font-size: 9px; }
-      .gyro-button { min-height: 25px; margin-top: 8px; font-size: 8px; }
+      .experience.has-gyro-control .scan-copy { margin-bottom: 8px; }
+      .gyro-button { min-height: 25px; margin-bottom: 8px; font-size: 8px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -739,6 +743,9 @@
           <p class="eyebrow">ZUGANGSKONTROLLE / 2026</p>
           <h1>TICKET<br>CONTROL</h1>
           <p class="scan-copy" id="scan-message" aria-live="polite">Ticket erkannt&nbsp;…</p>
+          <button class="gyro-button" id="gyro-button" type="button" aria-label="Ticket aktivieren: Neigungs-Effekt einschalten" hidden>
+            Ticket aktivieren
+          </button>
           <div class="scanner" aria-hidden="true">
             <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
             <span class="ball"></span><span class="scan-line"></span>
@@ -754,9 +761,6 @@
             </ol>
             <p class="scan-status"><span class="scan-activity"><span class="pulse"></span>AUTHENTIFIZIERUNG LÄUFT</span><span class="scan-percent" id="scan-percent">08%</span></p>
           </div>
-          <button class="gyro-button" id="gyro-button" type="button" aria-label="Ticket aktivieren: Neigungs-Effekt einschalten" hidden>
-            Ticket aktivieren
-          </button>
           <div class="scan-success" aria-hidden="true">
             <span class="success-check">✓</span>
             <span>PRÜFUNG ERFOLGREICH</span>
@@ -971,6 +975,7 @@
         setGyroButtonState('Neigung optional', 'idle');
         window.setTimeout(function () {
           gyroButton.hidden = true;
+          experience.classList.remove('has-gyro-control');
         }, 1800);
       }
 
@@ -1057,6 +1062,7 @@
       ticket.addEventListener('pointerdown', tapTicket, { passive: true });
 
       if (!prefersReducedMotion && sensorAvailable && gyroButton) {
+        experience.classList.add('has-gyro-control');
         gyroButton.hidden = false;
         gyroButton.addEventListener('click', requestOrientation);
       }
