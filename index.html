@@ -320,26 +320,94 @@
       filter: blur(2px);
     }
 
-    .ball {
+    .face-id {
       position: absolute;
-      inset: 50%;
-      width: 84px;
-      height: 84px;
-      margin: -42px;
-      border: 2px solid rgba(247,245,239,.72);
-      border-radius: 50%;
-      opacity: .75;
-      animation: ball-turn 6s linear infinite;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      width: 104px;
+      height: 128px;
+      margin: -64px -52px;
+      opacity: .82;
+      animation: face-float 3.4s ease-in-out infinite alternate;
     }
 
-    .ball::before, .ball::after {
+    .face-outline {
+      position: absolute;
+      inset: 1px 15px 2px;
+      border: 2px solid rgba(247,245,239,.7);
+      border-radius: 48% 48% 45% 45% / 41% 41% 55% 55%;
+      box-shadow: inset 0 0 20px rgba(245,208,70,.055), 0 0 13px rgba(245,208,70,.08);
+      transition: border-color .4s ease, box-shadow .4s ease;
+    }
+
+    .face-outline::before {
       content: "";
       position: absolute;
-      inset: 21px;
-      border: 2px solid rgba(247,245,239,.7);
-      border-radius: 50%;
+      top: 28px;
+      right: 12px;
+      left: 12px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(247,245,239,.42), transparent);
     }
-    .ball::after { inset: 10px 40px; border-width: 0 2px; border-radius: 0; transform: rotate(40deg); }
+
+    .face-eye, .face-landmark {
+      position: absolute;
+      z-index: 1;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 8px rgba(245,208,70,.65);
+      transition: background .35s ease, box-shadow .35s ease;
+    }
+
+    .face-eye { top: 42px; width: 5px; height: 5px; }
+    .face-eye.left { left: 29px; }
+    .face-eye.right { right: 29px; }
+
+    .face-nose {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      width: 8px;
+      height: 15px;
+      margin-left: -4px;
+      border-right: 1px solid rgba(247,245,239,.68);
+      border-bottom: 1px solid rgba(247,245,239,.68);
+      transform: skewY(-18deg);
+    }
+
+    .face-mouth {
+      position: absolute;
+      top: 85px;
+      left: 50%;
+      width: 31px;
+      height: 8px;
+      margin-left: -15px;
+      border-bottom: 2px solid rgba(247,245,239,.65);
+      border-radius: 0 0 50% 50%;
+    }
+
+    .face-landmark {
+      width: 4px;
+      height: 4px;
+      animation: landmark-pulse 1.65s var(--delay) ease-in-out infinite alternate;
+    }
+    .face-landmark.one { top: 41px; left: 18px; }
+    .face-landmark.two { top: 41px; right: 18px; }
+    .face-landmark.three { top: 62px; left: 50%; margin-left: -2px; }
+    .face-landmark.four { top: 88px; left: 29px; }
+    .face-landmark.five { top: 88px; right: 29px; }
+    .face-landmark.six { bottom: 17px; left: 50%; margin-left: -2px; }
+
+    .face-detected .face-outline {
+      border-color: var(--success);
+      box-shadow: inset 0 0 20px rgba(185,235,103,.12), 0 0 19px rgba(185,235,103,.24);
+    }
+    .face-detected .face-eye, .face-detected .face-landmark {
+      background: var(--success);
+      box-shadow: 0 0 9px rgba(185,235,103,.72);
+    }
+    .face-detected .face-id { animation: face-confirm .68s cubic-bezier(.2,1.3,.4,1) both; }
 
     .scan-workflow {
       width: 100%;
@@ -659,7 +727,9 @@
     @keyframes ambient-glow { to { opacity: .14; transform: translate(-47%, -53%) scale(1.12); } }
     @keyframes scanner-breathe { to { transform: scale(1.018); } }
     @keyframes scanner-core { 50% { opacity: 1; transform: scale(.92); } }
-    @keyframes ball-turn { to { transform: rotate(360deg); } }
+    @keyframes face-float { to { transform: translateY(-3px) scale(1.018); } }
+    @keyframes landmark-pulse { to { opacity: .3; transform: scale(.58); } }
+    @keyframes face-confirm { 0% { transform: scale(.95); } 65% { transform: scale(1.075); } 100% { transform: none; } }
     @keyframes step-pulse { to { transform: scale(.82); } }
     @keyframes status-dots { to { opacity: .38; letter-spacing: .22em; } }
     @keyframes success-flash { 0% { opacity: 0; } 28% { opacity: 1; } 100% { opacity: 0; } }
@@ -724,23 +794,34 @@
 
       <div class="screen scan-screen" aria-label="Ticket wird geprüft">
         <div class="scan-content">
-          <p class="eyebrow">ZUGANGSKONTROLLE / 2026</p>
+          <p class="eyebrow">ZUGANGSKONTROLLE / FACE ID</p>
           <h1>TICKET<br>CONTROL</h1>
-          <p class="scan-copy" id="scan-message" aria-live="polite">Ticket erkannt&nbsp;…</p>
+          <p class="scan-copy" id="scan-message" aria-live="polite">Gesichtsprofil wird erfasst&nbsp;…</p>
           <div class="scanner" aria-hidden="true">
             <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-            <span class="ball"></span><span class="scan-line"></span>
+            <span class="face-id">
+              <span class="face-outline"></span>
+              <span class="face-eye left"></span><span class="face-eye right"></span>
+              <span class="face-nose"></span><span class="face-mouth"></span>
+              <span class="face-landmark one" style="--delay:.05s"></span>
+              <span class="face-landmark two" style="--delay:.32s"></span>
+              <span class="face-landmark three" style="--delay:.14s"></span>
+              <span class="face-landmark four" style="--delay:.42s"></span>
+              <span class="face-landmark five" style="--delay:.22s"></span>
+              <span class="face-landmark six" style="--delay:.53s"></span>
+            </span>
+            <span class="scan-line"></span>
           </div>
           <div class="scan-workflow" aria-label="Prüfschritte">
             <div class="scan-meter" aria-hidden="true"><span id="scan-meter"></span></div>
             <ol class="scan-steps">
-              <li class="scan-step" data-scan-step="0"><span class="step-indicator"></span><span>Ticket erkannt</span><span class="step-tail"></span></li>
+              <li class="scan-step" data-scan-step="0"><span class="step-indicator"></span><span>Gesichtsprofil wird erfasst</span><span class="step-tail"></span></li>
               <li class="scan-step" data-scan-step="1"><span class="step-indicator"></span><span>Ticket-ID wird gelesen</span><span class="step-tail"></span></li>
               <li class="scan-step" data-scan-step="2"><span class="step-indicator"></span><span>Identität wird überprüft</span><span class="step-tail"></span></li>
               <li class="scan-step" data-scan-step="3"><span class="step-indicator"></span><span>Geburtstagsstatus wird geprüft</span><span class="step-tail"></span></li>
               <li class="scan-step" data-scan-step="4"><span class="step-indicator"></span><span>Zugangsberechtigung wird überprüft</span><span class="step-tail"></span></li>
             </ol>
-            <p class="scan-status"><span class="scan-activity"><span class="pulse"></span>AUTHENTIFIZIERUNG LÄUFT</span><span class="scan-percent" id="scan-percent">08%</span></p>
+            <p class="scan-status"><span class="scan-activity"><span class="pulse"></span>BIOMETRISCHE PRÜFUNG</span><span class="scan-percent" id="scan-percent">08%</span></p>
           </div>
           <div class="scan-success" aria-hidden="true">
             <span class="success-check">✓</span>
@@ -818,7 +899,7 @@
 
       /* Each checkpoint gets enough time to read before the valid ticket is revealed. */
       var checkpoints = [
-        { message: 'Ticket erkannt …', progress: 12 },
+        { message: 'Gesichtsprofil wird erfasst …', progress: 12 },
         { message: 'Ticket-ID wird gelesen …', progress: 30 },
         { message: 'Identität wird überprüft …', progress: 49 },
         { message: 'Geburtstagsstatus wird geprüft …', progress: 68 },
@@ -832,6 +913,7 @@
           step.classList.toggle('is-active', stepIndex === index);
           step.classList.toggle('is-complete', stepIndex < index);
         });
+        experience.classList.toggle('face-detected', index > 0);
         scanMessage.textContent = checkpoint.message;
         scanMeter.style.width = checkpoint.progress + '%';
         scanPercent.textContent = checkpoint.progress + '%';
@@ -992,6 +1074,7 @@
       }
 
       function confirmTicket() {
+        experience.classList.add('face-detected');
         scanSteps.forEach(function (step) {
           step.classList.remove('is-active');
           step.classList.add('is-complete');
