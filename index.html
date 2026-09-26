@@ -84,9 +84,20 @@
       animation: ambient-glow 9s ease-in-out infinite alternate;
     }
 
-    .ticket {
+    .ticket-tilt {
+      --shine-x: 50%;
+      --shine-y: 50%;
       position: relative;
       width: min(100%, 420px);
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    .ticket-tilt.is-parallax-active { will-change: transform; }
+
+    .ticket {
+      position: relative;
+      width: 100%;
       min-height: min(755px, calc(100dvh - 36px));
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, .28);
@@ -95,6 +106,7 @@
       box-shadow: 0 26px 80px rgba(0, 0, 0, .62), inset 0 1px 0 rgba(255,255,255,.08);
       touch-action: manipulation;
       transform: translateZ(0);
+      transform-style: preserve-3d;
       transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
     }
 
@@ -128,6 +140,8 @@
       padding: 0 22px;
       color: var(--black);
       background: var(--yellow);
+      transform: translateZ(8px);
+      transform-style: preserve-3d;
     }
 
     .brand {
@@ -195,6 +209,22 @@
 
     .is-confirmed .success-flash { animation: success-flash .72s ease-out both; }
 
+    .ticket-shine {
+      position: absolute;
+      z-index: 1;
+      inset: -22%;
+      pointer-events: none;
+      opacity: .45;
+      background:
+        radial-gradient(ellipse 42% 35% at var(--shine-x) var(--shine-y), rgba(255,255,255,.17), rgba(255,238,157,.065) 30%, transparent 72%),
+        linear-gradient(116deg, transparent 42%, rgba(255,255,255,.065) 50%, transparent 58%);
+      mix-blend-mode: screen;
+      transform: translateZ(2px);
+      transition: opacity .45s ease;
+    }
+
+    .is-verified .ticket-shine { opacity: .62; }
+
     .scan-screen {
       place-items: center;
       padding: 26px;
@@ -210,7 +240,7 @@
       pointer-events: none;
     }
 
-    .scan-content { position: relative; width: 100%; max-width: 298px; }
+    .scan-content { position: relative; width: 100%; max-width: 298px; transform: translateZ(7px); }
 
     .eyebrow {
       margin: 0 0 13px;
@@ -413,6 +443,45 @@
     .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 9px rgba(245,208,70,.5); animation: pulse .9s ease-in-out infinite alternate; }
     .scan-percent { color: var(--yellow); font-weight: 700; }
 
+    .gyro-button {
+      position: relative;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 29px;
+      margin: 13px auto 0;
+      padding: 0 12px;
+      color: var(--yellow);
+      border: 1px solid rgba(245,208,70,.48);
+      border-radius: 999px;
+      outline: 0;
+      background: rgba(245,208,70,.055);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 1px rgba(245,208,70,.035);
+      font: 800 9px/1 "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: color .22s ease, border-color .22s ease, background .22s ease, transform .18s ease, opacity .22s ease;
+    }
+
+    .gyro-button::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .gyro-button:active { transform: scale(.97); }
+    .gyro-button:focus-visible { box-shadow: 0 0 0 3px rgba(245,208,70,.22); }
+    .gyro-button.is-active { color: #19200e; border-color: var(--success); background: var(--success); }
+    .gyro-button[disabled] { cursor: default; opacity: .58; }
+
     .scan-success {
       position: absolute;
       inset: 0;
@@ -471,6 +540,7 @@
     }
 
     .valid-top, .facts, .wish { position: relative; z-index: 1; }
+    .valid-top, .facts { transform: translateZ(7px); }
 
     .approval {
       display: inline-flex;
@@ -555,7 +625,7 @@
       line-height: 1.05;
       letter-spacing: .04em;
       text-align: center;
-      transform: rotate(-12deg);
+      transform: translateZ(9px) rotate(-12deg);
     }
 
     .barcode {
@@ -626,6 +696,20 @@
       .scan-workflow { margin-top: 15px; }
       .scan-steps { gap: 4px; margin-top: 10px; }
       .scan-status { margin-top: 10px; }
+      .gyro-button { margin-top: 10px; min-height: 27px; }
+    }
+
+    @media (max-height: 590px) {
+      .scan-screen { padding: 14px 20px; }
+      .eyebrow { margin-bottom: 8px; }
+      h1 { margin-bottom: 7px; font-size: 36px; }
+      .scan-copy { min-height: 16px; margin-bottom: 12px; font-size: 13px; }
+      .scanner { width: min(41vw, 154px); }
+      .scan-workflow { margin-top: 11px; }
+      .scan-steps { gap: 3px; margin-top: 8px; }
+      .scan-step { min-height: 16px; font-size: 9px; }
+      .scan-status { margin-top: 8px; font-size: 9px; }
+      .gyro-button { min-height: 25px; margin-top: 8px; font-size: 8px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -639,6 +723,7 @@
     <div class="pitch-lines"></div>
     <div class="glow"></div>
 
+    <div class="ticket-tilt" id="ticket-tilt">
     <section class="ticket" aria-label="Geburtstags-Ticket">
       <header class="ticket-head">
         <div class="brand"><span class="brand-mark">+</span><span>MATCHDAY PASS</span></div>
@@ -646,6 +731,7 @@
         <span class="serial">BDAY-022-VALID</span>
       </header>
 
+      <div class="ticket-shine" aria-hidden="true"></div>
       <div class="success-flash" aria-hidden="true"></div>
 
       <div class="screen scan-screen" aria-label="Ticket wird geprüft">
@@ -668,6 +754,9 @@
             </ol>
             <p class="scan-status"><span class="scan-activity"><span class="pulse"></span>AUTHENTIFIZIERUNG LÄUFT</span><span class="scan-percent" id="scan-percent">08%</span></p>
           </div>
+          <button class="gyro-button" id="gyro-button" type="button" aria-label="Ticket aktivieren: Neigungs-Effekt einschalten" hidden>
+            Ticket aktivieren
+          </button>
           <div class="scan-success" aria-hidden="true">
             <span class="success-check">✓</span>
             <span>PRÜFUNG ERFOLGREICH</span>
@@ -703,6 +792,7 @@
         <span class="barcode" aria-hidden="true"></span>
       </div>
     </section>
+    </div>
 
     <div class="confetti" aria-hidden="true">
       <i style="left:5%;--w:5px;--h:14px;--c:#f8dc21;--x:38px;--r:410deg;--d:2.8s;--delay:.10s"></i>
@@ -724,11 +814,22 @@
 
       var experience = document.getElementById('experience');
       var ticket = document.querySelector('.ticket');
+      var ticketTilt = document.getElementById('ticket-tilt');
+      var gyroButton = document.getElementById('gyro-button');
       var scanMessage = document.getElementById('scan-message');
       var scanMeter = document.getElementById('scan-meter');
       var scanPercent = document.getElementById('scan-percent');
       var scanSteps = Array.prototype.slice.call(document.querySelectorAll('[data-scan-step]'));
       var tapTimer;
+      var reducedMotionQuery = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+      var prefersReducedMotion = reducedMotionQuery && reducedMotionQuery.matches;
+      var sensorAvailable = 'DeviceOrientationEvent' in window;
+      var permissionRequired = sensorAvailable && typeof window.DeviceOrientationEvent.requestPermission === 'function';
+      var orientationEnabled = false;
+      var sensorBaseline = null;
+      var parallaxFrame = 0;
+      var parallaxTarget = { x: 0, y: 0, shineX: 50, shineY: 50 };
+      var parallaxCurrent = { x: 0, y: 0, shineX: 50, shineY: 50 };
 
       /* Each checkpoint gets enough time to read before the valid ticket is revealed. */
       var checkpoints = [
@@ -751,6 +852,165 @@
         scanPercent.textContent = checkpoint.progress + '%';
       }
 
+      function clamp(value, minimum, maximum) {
+        return Math.min(Math.max(value, minimum), maximum);
+      }
+
+      function circularDifference(value, origin) {
+        return ((value - origin + 540) % 360) - 180;
+      }
+
+      function requestParallaxRender() {
+        if (!parallaxFrame && !prefersReducedMotion) {
+          parallaxFrame = window.requestAnimationFrame(renderParallax);
+        }
+      }
+
+      function setParallaxTarget(rotateX, rotateY, shineX, shineY) {
+        parallaxTarget.x = clamp(rotateX, -5.1, 5.1);
+        parallaxTarget.y = clamp(rotateY, -6.8, 6.8);
+        parallaxTarget.shineX = clamp(shineX, 23, 77);
+        parallaxTarget.shineY = clamp(shineY, 25, 75);
+
+        if (Math.abs(parallaxTarget.x) > .01 || Math.abs(parallaxTarget.y) > .01) {
+          ticketTilt.classList.add('is-parallax-active');
+        }
+        requestParallaxRender();
+      }
+
+      function resetParallax() {
+        setParallaxTarget(0, 0, 50, 50);
+      }
+
+      /* The outer wrapper owns the sensor transform; the ticket keeps its tap animation. */
+      function renderParallax() {
+        var strength = experience.classList.contains('is-verified') ? 1.14 : .86;
+        var smoothing = orientationEnabled ? .09 : .12;
+        var targetX = parallaxTarget.x * strength;
+        var targetY = parallaxTarget.y * strength;
+        var difference;
+
+        parallaxFrame = 0;
+        parallaxCurrent.x += (targetX - parallaxCurrent.x) * smoothing;
+        parallaxCurrent.y += (targetY - parallaxCurrent.y) * smoothing;
+        parallaxCurrent.shineX += (parallaxTarget.shineX - parallaxCurrent.shineX) * smoothing;
+        parallaxCurrent.shineY += (parallaxTarget.shineY - parallaxCurrent.shineY) * smoothing;
+
+        ticketTilt.style.transform = 'perspective(1000px) rotateX(' + parallaxCurrent.x.toFixed(3) + 'deg) rotateY(' + parallaxCurrent.y.toFixed(3) + 'deg)';
+        ticketTilt.style.setProperty('--shine-x', parallaxCurrent.shineX.toFixed(2) + '%');
+        ticketTilt.style.setProperty('--shine-y', parallaxCurrent.shineY.toFixed(2) + '%');
+
+        difference = Math.max(
+          Math.abs(targetX - parallaxCurrent.x),
+          Math.abs(targetY - parallaxCurrent.y),
+          Math.abs(parallaxTarget.shineX - parallaxCurrent.shineX),
+          Math.abs(parallaxTarget.shineY - parallaxCurrent.shineY)
+        );
+
+        if (difference > .012) {
+          requestParallaxRender();
+        } else if (!orientationEnabled && Math.abs(parallaxTarget.x) < .01 && Math.abs(parallaxTarget.y) < .01) {
+          ticketTilt.classList.remove('is-parallax-active');
+        }
+      }
+
+      function handleDeviceOrientation(event) {
+        var alpha;
+        var betaDelta;
+        var gammaDelta;
+        var alphaDelta;
+
+        if (typeof event.beta !== 'number' || typeof event.gamma !== 'number') {
+          return;
+        }
+
+        alpha = typeof event.alpha === 'number' ? event.alpha : 0;
+        if (!sensorBaseline) {
+          sensorBaseline = { alpha: alpha, beta: event.beta, gamma: event.gamma };
+          resetParallax();
+          return;
+        }
+
+        betaDelta = clamp(event.beta - sensorBaseline.beta, -34, 34);
+        gammaDelta = clamp(event.gamma - sensorBaseline.gamma, -30, 30);
+        alphaDelta = circularDifference(alpha, sensorBaseline.alpha);
+
+        /* beta/gamma provide the tilt; alpha adds a barely perceptible shift to the light. */
+        setParallaxTarget(
+          -betaDelta * .17,
+          (gammaDelta * .27) + (alphaDelta * .012),
+          50 + (gammaDelta * .78) + (alphaDelta * .03),
+          50 - (betaDelta * .62)
+        );
+      }
+
+      function setGyroButtonState(label, state) {
+        if (!gyroButton) {
+          return;
+        }
+        gyroButton.textContent = label;
+        gyroButton.disabled = state === 'loading';
+        gyroButton.classList.toggle('is-active', state === 'active');
+        gyroButton.hidden = false;
+      }
+
+      function activateOrientation() {
+        if (orientationEnabled) {
+          return;
+        }
+        orientationEnabled = true;
+        sensorBaseline = null;
+        window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: true });
+        setGyroButtonState('Neigung aktiv', 'active');
+      }
+
+      function denyOrientation() {
+        if (!gyroButton) {
+          return;
+        }
+        setGyroButtonState('Neigung optional', 'idle');
+        window.setTimeout(function () {
+          gyroButton.hidden = true;
+        }, 1800);
+      }
+
+      function requestOrientation() {
+        if (prefersReducedMotion || !sensorAvailable) {
+          return;
+        }
+
+        if (!permissionRequired) {
+          activateOrientation();
+          return;
+        }
+
+        setGyroButtonState('Freigabe wird angefragt', 'loading');
+        try {
+          window.DeviceOrientationEvent.requestPermission().then(function (permission) {
+            if (permission === 'granted') {
+              activateOrientation();
+            } else {
+              denyOrientation();
+            }
+          }).catch(denyOrientation);
+        } catch (error) {
+          denyOrientation();
+        }
+      }
+
+      function handleMouseParallax(event) {
+        var horizontal;
+        var vertical;
+
+        if (orientationEnabled || event.pointerType !== 'mouse') {
+          return;
+        }
+
+        horizontal = (event.clientX / window.innerWidth) - .5;
+        vertical = (event.clientY / window.innerHeight) - .5;
+        setParallaxTarget(-vertical * 8.2, horizontal * 11.6, 50 + (horizontal * 22), 50 + (vertical * 18));
+      }
+
       function confirmTicket() {
         scanSteps.forEach(function (step) {
           step.classList.remove('is-active');
@@ -761,6 +1021,7 @@
         scanMeter.style.background = 'linear-gradient(90deg, var(--success), #efffb3)';
         scanPercent.textContent = '100%';
         experience.classList.add('is-confirmed');
+        requestParallaxRender();
 
         if (navigator.vibrate) {
           navigator.vibrate([12, 35, 18]);
@@ -768,10 +1029,14 @@
 
         window.setTimeout(function () {
           experience.classList.add('is-verified');
+          requestParallaxRender();
         }, 420);
       }
 
-      function tapTicket() {
+      function tapTicket(event) {
+        if (event.target.closest && event.target.closest('.gyro-button')) {
+          return;
+        }
         ticket.classList.remove('is-tapped');
         window.requestAnimationFrame(function () {
           ticket.classList.add('is-tapped');
@@ -790,6 +1055,21 @@
       window.setTimeout(confirmTicket, 6150);
 
       ticket.addEventListener('pointerdown', tapTicket, { passive: true });
+
+      if (!prefersReducedMotion && sensorAvailable && gyroButton) {
+        gyroButton.hidden = false;
+        gyroButton.addEventListener('click', requestOrientation);
+      }
+
+      if (!prefersReducedMotion) {
+        window.addEventListener('pointermove', handleMouseParallax, { passive: true });
+        window.addEventListener('blur', resetParallax);
+        document.addEventListener('visibilitychange', function () {
+          if (!document.hidden) {
+            requestParallaxRender();
+          }
+        });
+      }
     }());
   </script>
 </body>
