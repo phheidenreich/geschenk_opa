@@ -269,8 +269,6 @@
       transition: color .28s ease, opacity .28s ease, transform .28s ease;
     }
 
-    .experience.has-gyro-control .scan-copy { margin-bottom: 11px; }
-
     .scanner {
       position: relative;
       width: min(61vw, 235px);
@@ -447,43 +445,32 @@
 
     .gyro-button {
       position: relative;
-      z-index: 5;
-      display: flex;
-      width: fit-content;
+      z-index: 3;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 7px;
-      min-height: 29px;
-      margin: 0 auto 13px;
-      padding: 0 12px;
-      color: var(--yellow);
-      border: 1px solid rgba(245,208,70,.48);
-      border-radius: 999px;
+      min-height: 0;
+      margin: 0;
+      padding: 5px 0;
+      color: inherit;
+      border: 0;
+      border-radius: 0;
       outline: 0;
-      background: rgba(245,208,70,.055);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 1px rgba(245,208,70,.035);
-      font: 800 9px/1 "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
-      letter-spacing: .15em;
-      text-transform: uppercase;
+      background: transparent;
+      box-shadow: none;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: .14em;
       -webkit-appearance: none;
       appearance: none;
-      cursor: pointer;
-      transition: color .22s ease, border-color .22s ease, background .22s ease, transform .18s ease, opacity .22s ease;
-    }
-
-    .gyro-button::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border: 1px solid currentColor;
-      border-radius: 50%;
-      box-shadow: 0 0 8px currentColor;
+      cursor: default;
+      transition: transform .18s ease, opacity .22s ease;
     }
 
     .gyro-button:active { transform: scale(.97); }
-    .gyro-button:focus-visible { box-shadow: 0 0 0 3px rgba(245,208,70,.22); }
-    .gyro-button.is-active { color: #19200e; border-color: var(--success); background: var(--success); }
-    .gyro-button[disabled] { cursor: default; opacity: .58; }
+    .gyro-button:focus-visible { box-shadow: 0 0 0 2px rgba(10,10,10,.45); }
+    .gyro-button[disabled] { cursor: default; }
 
     .scan-success {
       position: absolute;
@@ -699,7 +686,6 @@
       .scan-workflow { margin-top: 15px; }
       .scan-steps { gap: 4px; margin-top: 10px; }
       .scan-status { margin-top: 10px; }
-      .gyro-button { margin-bottom: 10px; min-height: 27px; }
     }
 
     @media (max-height: 590px) {
@@ -712,8 +698,6 @@
       .scan-steps { gap: 3px; margin-top: 8px; }
       .scan-step { min-height: 16px; font-size: 9px; }
       .scan-status { margin-top: 8px; font-size: 9px; }
-      .experience.has-gyro-control .scan-copy { margin-bottom: 8px; }
-      .gyro-button { min-height: 25px; margin-bottom: 8px; font-size: 8px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -731,7 +715,7 @@
     <section class="ticket" aria-label="Geburtstags-Ticket">
       <header class="ticket-head">
         <div class="brand"><span class="brand-mark">+</span><span>MATCHDAY PASS</span></div>
-        <span class="entry">ENTRY 022</span>
+        <button class="entry gyro-button" id="gyro-button" type="button" aria-label="Ticketnummer 022. Neigungs-Effekt aktivieren.">ENTRY 022</button>
         <span class="serial">BDAY-022-VALID</span>
       </header>
 
@@ -743,9 +727,6 @@
           <p class="eyebrow">ZUGANGSKONTROLLE / 2026</p>
           <h1>TICKET<br>CONTROL</h1>
           <p class="scan-copy" id="scan-message" aria-live="polite">Ticket erkannt&nbsp;…</p>
-          <button class="gyro-button" id="gyro-button" type="button" aria-label="Ticket aktivieren: Neigungs-Effekt einschalten" hidden>
-            Ticket aktivieren
-          </button>
           <div class="scanner" aria-hidden="true">
             <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
             <span class="ball"></span><span class="scan-line"></span>
@@ -952,10 +933,8 @@
         if (!gyroButton) {
           return;
         }
-        gyroButton.textContent = label;
         gyroButton.disabled = state === 'loading';
-        gyroButton.classList.toggle('is-active', state === 'active');
-        gyroButton.hidden = false;
+        gyroButton.setAttribute('aria-label', label + '. Ticketnummer 022.');
       }
 
       function activateOrientation() {
@@ -973,10 +952,6 @@
           return;
         }
         setGyroButtonState('Neigung optional', 'idle');
-        window.setTimeout(function () {
-          gyroButton.hidden = true;
-          experience.classList.remove('has-gyro-control');
-        }, 1800);
       }
 
       function requestOrientation() {
@@ -1062,9 +1037,10 @@
       ticket.addEventListener('pointerdown', tapTicket, { passive: true });
 
       if (!prefersReducedMotion && sensorAvailable && gyroButton) {
-        experience.classList.add('has-gyro-control');
-        gyroButton.hidden = false;
         gyroButton.addEventListener('click', requestOrientation);
+      } else if (gyroButton) {
+        gyroButton.disabled = true;
+        gyroButton.setAttribute('aria-label', 'Ticketnummer 022.');
       }
 
       if (!prefersReducedMotion) {
